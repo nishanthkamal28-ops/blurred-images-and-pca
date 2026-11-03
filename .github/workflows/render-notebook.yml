@@ -1,0 +1,39 @@
+name: Render notebook outputs
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install notebook dependencies
+        run: python -m pip install --upgrade jupyter nbconvert ipykernel numpy scipy matplotlib pandas scikit-image pillow
+
+      - name: Execute notebook and save outputs
+        run: jupyter nbconvert --to notebook --execute 3_F_14_MFAD_Oct26_16.ipynb --inplace --ExecutePreprocessor.timeout=300
+
+      - name: Commit rendered notebook
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add 3_F_14_MFAD_Oct26_16.ipynb
+          if git diff --cached --quiet; then
+            echo "Notebook outputs are already up to date."
+          else
+            git commit -m "Render notebook outputs"
+            git push
+          fi
