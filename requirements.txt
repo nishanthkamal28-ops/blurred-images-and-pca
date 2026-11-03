@@ -1,0 +1,9 @@
+jupyter
+nbconvert
+ipykernel
+numpy
+scipy
+matplotlib
+pandas
+scikit-image
+pillow
