@@ -1,6 +1,10 @@
 name: Render notebook outputs
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - requirements.txt
   workflow_dispatch:
 
 permissions:
@@ -21,7 +25,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install notebook dependencies
-        run: python -m pip install --upgrade jupyter nbconvert ipykernel numpy scipy matplotlib pandas scikit-image pillow
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
 
       - name: Execute notebook and save outputs
         run: jupyter nbconvert --to notebook --execute 3_F_14_MFAD_Oct26_16.ipynb --inplace --ExecutePreprocessor.timeout=300
